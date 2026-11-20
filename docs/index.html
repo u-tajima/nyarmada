@@ -2,7 +2,7 @@
 <html lang="ja">
   <head>
     <meta charset="UTF-8" />
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; manifest-src 'self'; media-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net/npm/matter-js@0.20.0/build/matter.min.js; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; manifest-src 'self'; media-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'" />
     <meta name="referrer" content="no-referrer" />
     <meta
       name="viewport"
@@ -23,8 +23,7 @@
       href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@700;800;900&display=swap"
       rel="stylesheet"
     />
-    <script type="module" crossorigin src="./assets/index-B_ns__gN.js"></script>
-    <link rel="stylesheet" crossorigin href="./assets/index-Bxvhddca.css">
+    <link rel="stylesheet" href="./assets/index-Bxvhddca.css" />
   </head>
   <body>
     <div id="app"></div>
@@ -35,5 +34,11 @@
         <p>NYARMADA は横画面専用です</p>
       </div>
     </div>
+    <script
+      src="https://cdn.jsdelivr.net/npm/matter-js@0.20.0/build/matter.min.js"
+      integrity="sha384-ZRKYEXtLBVeqs9z1WxyeKutCqnkqolS/r1EUWuoUpG4ZKbnRAIXnHhHdnNuiB6CL"
+      crossorigin="anonymous"
+    ></script>
+    <script type="module" src="./app/main.js"></script>
   </body>
 </html>

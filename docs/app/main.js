@@ -1,0 +1,1 @@
+import{GameApp as o}from"./ui/garage.js";const e=document.getElementById("app");e&&new o(e);
