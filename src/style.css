@@ -1,0 +1,1011 @@
+:root {
+  --bg-dark: #090d1a;
+  --panel-bg: #131c33;
+  --panel-border: #283659;
+  --accent-yellow: #facc15;
+  --accent-blue: #38bdf8;
+  --accent-red: #f43f5e;
+  --accent-green: #22c55e;
+  --text-main: #f8fafc;
+  --text-sub: #94a3b8;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: radial-gradient(circle at top, #172554 0%, #090d1a 70%);
+  color: var(--text-main);
+  font-family: 'M PLUS Rounded 1c', system-ui, -apple-system, sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-text-size-adjust: 100%;
+  touch-action: manipulation;
+  overscroll-behavior: none;
+}
+
+canvas {
+  touch-action: manipulation;
+}
+
+/* 縦向きスマホ用：横向き案内オーバーレイ */
+#rotate-overlay {
+  display: none;
+}
+
+@media (orientation: portrait) and (max-width: 900px) and (pointer: coarse) {
+  #rotate-overlay {
+    display: flex;
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle at center, #172554 0%, #090d1a 75%);
+    text-align: center;
+    padding: 24px;
+  }
+  #app {
+    display: none;
+  }
+}
+
+.rotate-box h2 {
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: #fde047;
+  margin: 16px 0 8px;
+}
+
+.rotate-box p {
+  font-size: 0.85rem;
+  color: var(--text-sub);
+}
+
+.rotate-phone {
+  font-size: 4rem;
+  display: inline-block;
+  animation: rotatePhone 2.2s ease-in-out infinite;
+}
+
+@keyframes rotatePhone {
+  0%,
+  20% {
+    transform: rotate(0deg);
+  }
+  50%,
+  80% {
+    transform: rotate(-90deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+#app {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 12px 16px 24px;
+}
+
+/* Header */
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 16px;
+  background: rgba(19, 28, 51, 0.92);
+  border: 2px solid var(--panel-border);
+  border-radius: 16px;
+  margin-bottom: 14px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  flex-wrap: wrap;
+}
+
+.brand {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.brand h1 {
+  font-size: 1.5rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  background: linear-gradient(90deg, #facc15, #fb923c, #38bdf8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.brand span {
+  font-size: 0.85rem;
+  color: var(--text-sub);
+  font-weight: 700;
+}
+
+.header-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* Buttons */
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  border-radius: 10px;
+  font-weight: 800;
+  transition: transform 0.08s ease, filter 0.12s ease, background 0.15s;
+}
+
+button:hover:not(:disabled) {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
+
+button:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+/* タッチ端末ではホバー効果が押しっぱなしに見えないよう無効化 */
+@media (hover: none) {
+  button:hover:not(:disabled) {
+    filter: none;
+    transform: none;
+  }
+  button:active:not(:disabled) {
+    filter: brightness(1.2);
+    transform: scale(0.97);
+  }
+}
+
+button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.btn-chip {
+  padding: 7px 13px;
+  font-size: 0.82rem;
+  background: #1e293b;
+  color: #e2e8f0;
+  border: 1.5px solid #334155;
+}
+
+.btn-chip.active {
+  background: #422006;
+  color: #fde047;
+  border-color: #eab308;
+}
+
+/* Garage Layout */
+.garage-grid {
+  display: grid;
+  grid-template-columns: 1.08fr 1fr;
+  gap: 16px;
+}
+
+@media (max-width: 960px) and (orientation: portrait) {
+  .garage-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.panel-catalog {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.panel {
+  background: var(--panel-bg);
+  border: 2px solid var(--panel-border);
+  border-radius: 18px;
+  padding: 16px;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
+}
+
+.preview-wrap {
+  position: relative;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 2px solid #1e293b;
+  background: #0f172a;
+}
+
+.preview-canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  cursor: pointer;
+}
+
+.stats-strip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.stat-box {
+  background: #0f172a;
+  border: 1.5px solid #243252;
+  border-radius: 10px;
+  padding: 8px 10px;
+  text-align: center;
+}
+
+.stat-label {
+  font-size: 0.72rem;
+  color: var(--text-sub);
+}
+
+.stat-value {
+  font-size: 1.05rem;
+  font-weight: 900;
+  margin-top: 2px;
+}
+
+.stat-value.energy-ok {
+  color: #38bdf8;
+}
+
+.stat-value.energy-full {
+  color: #facc15;
+}
+
+.section-title {
+  font-size: 0.92rem;
+  color: #cbd5e1;
+  margin: 14px 0 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Slot Cards */
+.slot-list {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.slot-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 11px;
+  border-radius: 11px;
+  background: #0f172a;
+  border: 2px solid #1e293b;
+  cursor: pointer;
+}
+
+.slot-row.selected {
+  border-color: var(--accent-yellow);
+  background: #172036;
+}
+
+.slot-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.cat-badge {
+  font-size: 0.7rem;
+  padding: 3px 7px;
+  border-radius: 6px;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.cat-weapon {
+  background: rgba(248, 113, 113, 0.2);
+  color: #fca5a5;
+  border: 1px solid #ef4444;
+}
+
+.cat-thruster {
+  background: rgba(251, 146, 60, 0.2);
+  color: #fdba74;
+  border: 1px solid #f97316;
+}
+
+.cat-gadget {
+  background: rgba(56, 189, 248, 0.2);
+  color: #7dd3fc;
+  border: 1px solid #0ea5e9;
+}
+
+.slot-actions {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.btn-mini {
+  padding: 4px 8px;
+  font-size: 0.74rem;
+  background: #1e293b;
+  color: #f8fafc;
+  border: 1px solid #475569;
+}
+
+.btn-mini.flipped {
+  background: #4c1d95;
+  border-color: #a855f7;
+  color: #f3e8ff;
+}
+
+/* Catalog Tabs & Cards */
+.tabs {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.tab-btn {
+  padding: 9px 6px;
+  font-size: 0.82rem;
+  background: #0f172a;
+  color: var(--text-sub);
+  border: 2px solid #1e293b;
+}
+
+.tab-btn.active {
+  background: #1e3a8a;
+  color: #ffffff;
+  border-color: #38bdf8;
+}
+
+.catalog-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 295px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.item-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: #0f172a;
+  border: 2px solid #1e293b;
+}
+
+.item-left {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  min-width: 0;
+  flex: 1;
+}
+
+.thumb-box {
+  width: 74px;
+  height: 50px;
+  flex-shrink: 0;
+  border-radius: 9px;
+  background: radial-gradient(circle, #172554 0%, #090d1a 100%);
+  border: 1.5px solid #283659;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.slot-thumb {
+  width: 54px;
+  height: 36px;
+  flex-shrink: 0;
+  border-radius: 7px;
+  background: #090d1a;
+  border: 1px solid #283659;
+}
+
+.item-card.active-hull {
+  border-color: #38bdf8;
+  background: #132342;
+}
+
+.item-card.locked {
+  opacity: 0.52;
+}
+
+.item-info h4 {
+  font-size: 0.92rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.item-info p {
+  font-size: 0.76rem;
+  color: var(--text-sub);
+  margin-top: 3px;
+  line-height: 1.35;
+}
+
+.energy-pill {
+  font-size: 0.74rem;
+  background: #1e293b;
+  color: #38bdf8;
+  padding: 2px 7px;
+  border-radius: 99px;
+}
+
+.btn-equip {
+  padding: 8px 13px;
+  font-size: 0.8rem;
+  background: #2563eb;
+  color: white;
+  white-space: nowrap;
+}
+
+/* Stage Launch Card */
+.stage-card {
+  margin-top: 14px;
+  padding: 13px 14px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #1e1b4b 0%, #0f172a 100%);
+  border: 2px solid #4338ca;
+}
+
+.stage-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.stage-title {
+  font-size: 1rem;
+  font-weight: 900;
+  color: #fde047;
+}
+
+.stage-tagline {
+  font-size: 0.8rem;
+  color: #cbd5e1;
+  margin-bottom: 8px;
+  line-height: 1.4;
+}
+
+.enemy-intel-box {
+  margin-bottom: 8px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: rgba(9, 13, 26, 0.72);
+  border: 1.5px solid #312e81;
+}
+
+.intel-label {
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #a5b4fc;
+  margin-bottom: 6px;
+}
+
+.intel-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.intel-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 8px 3px 4px;
+  border-radius: 8px;
+  background: #131c33;
+  border: 1px solid #334155;
+  font-size: 0.74rem;
+  font-weight: 800;
+  color: #e2e8f0;
+}
+
+.intel-chip.new-target {
+  background: linear-gradient(135deg, rgba(250, 204, 21, 0.2) 0%, rgba(234, 88, 12, 0.22) 100%);
+  border: 1.5px solid #facc15;
+  color: #fef08a;
+  box-shadow: 0 0 10px rgba(250, 204, 21, 0.28);
+}
+
+.intel-thumb {
+  width: 40px;
+  height: 26px;
+  border-radius: 5px;
+  background: #090d1a;
+  border: 1px solid #283659;
+  flex-shrink: 0;
+}
+
+.intel-badge {
+  font-size: 0.66rem;
+  padding: 1px 6px;
+  border-radius: 99px;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.intel-badge.new {
+  background: #facc15;
+  color: #1e1b4b;
+}
+
+.intel-badge.owned {
+  background: rgba(34, 197, 94, 0.25);
+  color: #86efac;
+  border: 1px solid #22c55e;
+}
+
+.stage-reward {
+  font-size: 0.76rem;
+  font-weight: 800;
+  color: #4ade80;
+  margin-bottom: 10px;
+}
+
+.launch-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1.45fr;
+  gap: 10px;
+}
+
+.btn-test {
+  padding: 12px 10px;
+  font-size: 0.88rem;
+  background: #334155;
+  color: #f8fafc;
+  border: 2px solid #64748b;
+}
+
+.btn-battle {
+  padding: 12px 14px;
+  font-size: 1.02rem;
+  background: linear-gradient(180deg, #f43f5e 0%, #e11d48 100%);
+  color: #ffffff;
+  border: 2px solid #fda4af;
+  box-shadow: 0 4px 16px rgba(244, 63, 94, 0.45);
+}
+
+.toast-msg {
+  margin-top: 8px;
+  padding: 7px 10px;
+  border-radius: 8px;
+  background: rgba(244, 63, 94, 0.2);
+  border: 1px solid #f43f5e;
+  color: #fecdd3;
+  font-size: 0.8rem;
+  text-align: center;
+}
+
+/* Battle View */
+.battle-wrapper {
+  position: relative;
+  background: var(--panel-bg);
+  border: 2px solid var(--panel-border);
+  border-radius: 18px;
+  padding: 12px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+}
+
+.battle-canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+  border: 2px solid #1e293b;
+  background: #0f172a;
+}
+
+.battle-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.result-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(9, 13, 26, 0.68);
+  border-radius: 18px;
+  backdrop-filter: blur(3px);
+  animation: fadeIn 0.22s ease;
+}
+
+.result-box {
+  background: #131c33;
+  border: 3px solid #facc15;
+  border-radius: 20px;
+  padding: 24px 30px;
+  text-align: center;
+  max-width: 440px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.65);
+}
+
+.result-box h2 {
+  font-size: 2rem;
+  font-weight: 900;
+  margin-bottom: 8px;
+}
+
+.unlock-banner {
+  margin: 12px 0;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: rgba(34, 197, 94, 0.18);
+  border: 2px solid #22c55e;
+  color: #86efac;
+  font-weight: 800;
+  font-size: 0.9rem;
+}
+
+.result-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* =========================================================
+   スマホ横画面レイアウト（高さが低い横向き端末）
+   ========================================================= */
+@media (orientation: landscape) and (max-height: 540px) {
+  html,
+  body {
+    height: 100%;
+    overflow: hidden;
+  }
+
+  #app {
+    max-width: none;
+    height: 100vh;
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    padding: max(4px, env(safe-area-inset-top)) max(8px, env(safe-area-inset-right))
+      max(4px, env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-left));
+  }
+
+  /* ヘッダー */
+  .top-bar {
+    flex-shrink: 0;
+    padding: 4px 10px;
+    margin-bottom: 6px;
+    border-radius: 10px;
+    gap: 6px;
+    flex-wrap: nowrap;
+  }
+  .brand h1 {
+    font-size: 1rem;
+    white-space: nowrap;
+  }
+  .brand span {
+    display: none;
+  }
+  .header-actions {
+    gap: 5px;
+    flex-wrap: nowrap;
+  }
+  .btn-chip {
+    padding: 5px 9px;
+    font-size: 0.7rem;
+    white-space: nowrap;
+  }
+  .label-long {
+    display: none;
+  }
+  .preset-row {
+    flex-wrap: nowrap !important;
+    overflow-x: auto;
+    max-width: 100%;
+    scrollbar-width: none;
+  }
+  .preset-row .btn-mini {
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* ガレージ：左右2カラムをそれぞれ独立スクロール */
+  .garage-grid {
+    flex: 1;
+    min-height: 0;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .panel {
+    padding: 8px;
+    border-radius: 12px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    min-height: 0;
+  }
+  .panel-catalog {
+    justify-content: flex-start;
+  }
+
+  .preview-wrap {
+    border-radius: 10px;
+  }
+  .preview-canvas {
+    width: auto;
+    max-width: 100%;
+    max-height: 44dvh;
+    margin: 0 auto;
+  }
+
+  .stats-strip {
+    gap: 4px;
+    margin-top: 6px;
+  }
+  .stat-box {
+    padding: 4px 4px;
+    border-radius: 8px;
+  }
+  .stat-label {
+    font-size: 0.58rem;
+    white-space: nowrap;
+  }
+  .stat-value {
+    font-size: 0.8rem;
+  }
+
+  .section-title {
+    font-size: 0.76rem;
+    margin: 8px 0 5px;
+  }
+  .slot-list {
+    gap: 5px;
+  }
+  .slot-row {
+    padding: 5px 8px;
+    border-radius: 9px;
+  }
+  .slot-row div[style*='font-size:0.84rem'] {
+    font-size: 0.74rem !important;
+  }
+  .slot-row div[style*='font-size:0.72rem'] {
+    font-size: 0.64rem !important;
+  }
+  .slot-thumb {
+    width: 44px;
+    height: 29px;
+  }
+  .btn-mini {
+    min-height: 30px;
+    padding: 4px 8px;
+    font-size: 0.7rem;
+  }
+
+  /* カタログ */
+  .tabs {
+    gap: 4px;
+    margin-bottom: 6px;
+  }
+  .tab-btn {
+    padding: 7px 2px;
+    font-size: 0.7rem;
+    border-radius: 8px;
+  }
+  .catalog-list {
+    max-height: 42dvh;
+    gap: 5px;
+    overscroll-behavior: contain;
+  }
+  .item-card {
+    padding: 6px 8px;
+    gap: 6px;
+    border-radius: 10px;
+  }
+  .item-left {
+    gap: 7px;
+  }
+  .thumb-box {
+    width: 56px;
+    height: 38px;
+  }
+  .item-info h4 {
+    font-size: 0.76rem;
+    gap: 4px;
+    flex-wrap: wrap;
+  }
+  .energy-pill {
+    font-size: 0.62rem;
+    padding: 1px 5px;
+  }
+  .item-info p {
+    font-size: 0.64rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .btn-equip {
+    padding: 8px 9px;
+    font-size: 0.7rem;
+  }
+
+  /* ステージカード：出撃ボタンは常に画面下に張り付く */
+  .stage-card {
+    margin-top: 8px;
+    padding: 8px 10px 0;
+    border-radius: 10px;
+  }
+  .stage-title {
+    font-size: 0.8rem;
+    text-align: center;
+  }
+  .stage-nav .btn-mini {
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .stage-tagline {
+    font-size: 0.66rem;
+    margin-bottom: 5px;
+  }
+  .enemy-intel-box {
+    padding: 5px 7px;
+    margin-bottom: 5px;
+  }
+  .intel-label {
+    font-size: 0.62rem;
+    margin-bottom: 4px;
+  }
+  .intel-chips {
+    gap: 4px;
+  }
+  .intel-chip {
+    font-size: 0.62rem;
+    padding: 2px 6px 2px 3px;
+  }
+  .intel-thumb {
+    width: 32px;
+    height: 21px;
+  }
+  .stage-reward {
+    font-size: 0.64rem;
+    margin-bottom: 6px;
+  }
+  .launch-buttons {
+    position: sticky;
+    bottom: -8px;
+    gap: 6px;
+    padding: 6px 0 8px;
+    background: linear-gradient(180deg, rgba(15, 23, 42, 0) 0%, #111633 35%);
+  }
+  .btn-test {
+    padding: 9px 6px;
+    font-size: 0.76rem;
+  }
+  .btn-battle {
+    padding: 9px 10px;
+    font-size: 0.88rem;
+  }
+  .toast-msg {
+    font-size: 0.68rem;
+    padding: 5px 8px;
+  }
+
+  /* バトル：ヘッダーを隠し、アリーナを画面いっぱいに */
+  body[data-mode='battle'] .top-bar {
+    display: none;
+  }
+  .battle-wrapper {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 4px;
+    border-radius: 10px;
+  }
+  .battle-canvas {
+    flex: 1;
+    min-height: 0;
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    max-height: calc(100dvh - 54px);
+    margin: 0 auto;
+    object-fit: contain;
+    border-radius: 8px;
+  }
+  .battle-controls {
+    margin-top: 4px;
+    gap: 6px;
+    flex-wrap: nowrap;
+    flex-shrink: 0;
+  }
+  .battle-controls > div:first-child {
+    font-size: 0.72rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+  }
+  .battle-controls > div:last-child {
+    gap: 5px !important;
+    flex-shrink: 0;
+  }
+
+  .result-overlay {
+    border-radius: 10px;
+  }
+  .result-box {
+    padding: 12px 18px;
+    max-width: 80vw;
+    border-radius: 14px;
+  }
+  .result-box h2 {
+    font-size: 1.35rem;
+    margin-bottom: 4px;
+  }
+  .result-box p {
+    font-size: 0.78rem !important;
+  }
+  .unlock-banner {
+    margin: 6px 0;
+    padding: 6px 10px;
+    font-size: 0.76rem;
+  }
+  .result-actions {
+    margin-top: 8px;
+    gap: 6px;
+  }
+  .result-actions button {
+    padding: 8px 12px !important;
+    font-size: 0.78rem !important;
+  }
+}
+
+/* 特に小さい横画面（iPhone SE 等）ではヘッダーのサンドボックス文言を短縮 */
+@media (orientation: landscape) and (max-height: 540px) and (max-width: 700px) {
+  .brand h1 {
+    font-size: 0.85rem;
+  }
+  .stat-label {
+    display: none;
+  }
+  .panel-build > div:first-child > div:first-child span {
+    display: none;
+  }
+}
